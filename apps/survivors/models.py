@@ -31,3 +31,11 @@ class Sobreviventes(models.Model):
 
     Status = models.BooleanField(verbose_name='Infequitado', default=False)
 
+    class Meta:
+        verbose_name = 'Sobrevivente'
+        verbose_name_plural = 'Sobreviventes'
+
+    def __str__(self):
+        return User.username
+
+
