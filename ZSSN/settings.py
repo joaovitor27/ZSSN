@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #appstrird
     'rest_framework',
+    #apps
+    'survivors.apps.SurvivorsConfig'
 
 ]
 
