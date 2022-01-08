@@ -14,6 +14,18 @@ class StockItems(models.Model):
         return self.item
 
 
+class inventory(models.Model):
+    amount = models.IntegerField(verbose_name='Quantidade')
+    item = models.ManyToManyField(StockItems, verbose_name='Item')
+
+    class Meta:
+        verbose_name = 'inventário'
+        verbose_name_plural = 'inventários'
+
+    def __int__(self):
+        return self.amount
+
+
 class Sobreviventes(models.Model):
     TYPE_CHOICES = [
         ('M', 'Masculino'),
@@ -27,7 +39,9 @@ class Sobreviventes(models.Model):
     lat = models.DecimalField(verbose_name='Latitude', max_digits=9, decimal_places=6)
     log = models.DecimalField(verbose_name='Logetude', max_digits=9, decimal_places=6)
 
+    inventory = models.ForeignKey(inventory, verbose_name='Inventário', on_delete=models.CASCADE)
     Status = models.BooleanField(verbose_name='Infequitado', default=False)
+
 
     class Meta:
         verbose_name = 'Sobrevivente'
@@ -47,17 +61,3 @@ class accusations(models.Model):
 
     def __str__(self):
         return self.survivors
-
-
-class inventory(models.Model):
-    amount = models.IntegerField(verbose_name='Quantidade')
-    item = models.ManyToManyField(StockItems, verbose_name='Item')
-    survivors = models.ForeignKey(Sobreviventes, verbose_name='Sobreviventes', on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'inventário'
-        verbose_name_plural = 'inventários'
-
-    def __str__(self):
-        return self.amount + '|' + self.item
-
