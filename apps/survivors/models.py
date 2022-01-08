@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.deletion import CASCADE
 
 # Create your models here.
 class StockItems(models.Model):
@@ -21,7 +22,7 @@ class Sobreviventes(models.Model):
         ('F', 'Femenino'),
     ]
 
-    onwer = models.ForeignKey(User, verbose_name='Sobrevivente', max_length=50)
+    onwer = models.ForeignKey(User, verbose_name='Sobrevivente', max_length=50, on_delete=models.CASCADE)
     age = models.IntegerField(verbose_name='Idade')
     gender = models.CharField(verbose_name='Sexo', max_length=50, choices=TYPE_CHOICES)
 
@@ -29,3 +30,4 @@ class Sobreviventes(models.Model):
     log = models.DecimalField(verbose_name='Logetude', max_digits=9, decimal_places=6)
 
     Status = models.BooleanField(verbose_name='Infequitado', default=False)
+
