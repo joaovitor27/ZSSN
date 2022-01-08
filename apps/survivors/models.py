@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
+from django.db.models.fields.related import ManyToManyField
 
 # Create your models here.
 class StockItems(models.Model):
@@ -22,7 +23,7 @@ class Sobreviventes(models.Model):
         ('F', 'Femenino'),
     ]
 
-    onwer = models.ForeignKey(User, verbose_name='Sobrevivente', max_length=50, on_delete=models.CASCADE)
+    onwer = models.ForeignKey(User, verbose_name='Sobrevivente', on_delete=models.CASCADE)
     age = models.IntegerField(verbose_name='Idade')
     gender = models.CharField(verbose_name='Sexo', max_length=50, choices=TYPE_CHOICES)
 
@@ -38,4 +39,8 @@ class Sobreviventes(models.Model):
     def __str__(self):
         return User.username
 
+
+class accusations(models.Model):
+    survivors = models.ManyToManyField(Sobreviventes, verbose_name='Sobrevivente')
+    numbercomplaints = models.IntegerField(verbose_name='Número de Denúncias')
 
