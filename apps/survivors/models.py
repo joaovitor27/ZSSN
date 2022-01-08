@@ -37,10 +37,16 @@ class Sobreviventes(models.Model):
         verbose_name_plural = 'Sobreviventes'
 
     def __str__(self):
-        return User.username
+        return self.onwer.username
 
 
 class accusations(models.Model):
     survivors = models.ManyToManyField(Sobreviventes, verbose_name='Sobrevivente')
     numbercomplaints = models.IntegerField(verbose_name='Número de Denúncias')
 
+    class Meta:
+        verbose_name = 'Denúncia'
+        verbose_name_plural = 'Denúncias'
+
+    def __str__(self):
+        return self.survivors
