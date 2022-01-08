@@ -1,8 +1,5 @@
-from typing import TYPE_CHECKING
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.deletion import CASCADE
-from django.db.models.fields.related import ManyToManyField
 
 # Create your models here.
 class StockItems(models.Model):
@@ -50,3 +47,17 @@ class accusations(models.Model):
 
     def __str__(self):
         return self.survivors
+
+
+class inventory(models.Model):
+    amount = models.IntegerField(verbose_name='Quantidade')
+    item = models.ManyToManyField(StockItems, verbose_name='Item')
+    survivors = models.ForeignKey(Sobreviventes, verbose_name='Sobreviventes', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'inventário'
+        verbose_name_plural = 'inventários'
+
+    def __str__(self):
+        return self.amount + '|' + self.item
+
