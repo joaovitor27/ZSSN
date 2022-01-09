@@ -1,9 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import StockItems, Sobreviventes, accusations, inventory
+from .models import Survivor, Item, Inventory
 
-admin.site.register(StockItems)
-admin.site.register(Sobreviventes)
-admin.site.register(accusations)
-admin.site.register(inventory)
+admin.site.register(Survivor)
+admin.site.register(Item)
+admin.site.register(Inventory)
