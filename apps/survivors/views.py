@@ -13,3 +13,5 @@ class ItemListCreateAPIView(ListCreateAPIView):
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
     permission_classes = [IsAdminUser]
+
+
