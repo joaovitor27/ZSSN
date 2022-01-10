@@ -114,3 +114,11 @@ def mark_survivor_as_infected(request):
     return Response({'message': _('Operação não realizada. É preciso três sobreviventes únicos e o suspeito de estar infectado não pode ser quem acusa.')})
 
 
+@api_view(['GET'])
+def survivors_percent_infected_report(request):
+    
+    survivors = Survivor.objects.all()
+    infected_survivors = survivors.filter(infected=True)
+    percents = infected_survivors.count() / survivors.count() * 100
+    return Response({'survivors_percent_infected': '{0:.2f}'.format(percents)})
+
