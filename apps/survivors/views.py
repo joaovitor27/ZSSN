@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from .models import Item, Survivor, Inventory
 from .serializers import ItemSerializer, SurvivorSerializer, InventorySerializer
@@ -42,4 +43,50 @@ class SurvivorLocationUpdate(APIView):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED, data=serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'message': _('Atualização não realizada.')})
+
+
+@api_view(['POST'])
+def transaction_between_survivors(request):
+   
+    try:
+        survivor1 = Survivor.objects.get(id=request.data.get('survivor1'), infected=False)
+        survivor2 = Survivor.objects.get(id=request.data.get('survivor2'), infected=False)
+        item_survivor1 = Item.objects.get(id=request.data.get('item_survivor1'))
+        item_survivor2 = Item.objects.get(id=request.data.get('item_survivor2'))
+        inventory_survivor1 = Inventory.objects.get(survivor=survivor1, item=item_survivor1)
+        inventory_survivor2 = Inventory.objects.get(survivor=survivor2, item=item_survivor2)
+    except Survivor.DoesNotExist:
+        return Response({'message': _('Um dos sobreviventes não foi encontrado na base de dados ou está infectado.')})
+    except Item.DoesNotExist:
+        return Response({'message': _('Item não cadastrado no sistema.')})
+    except Inventory.DoesNotExist:
+        return Response({'message': _('Um dos sobreviventes não tem o item no seu inventário.')})
+    item_survivor1_quantity = request.data.get('item_survivor1_quantity')
+    item_survivor2_quantity = request.data.get('item_survivor2_quantity')
+    if survivor1 != survivor2:
+        points_quantity_survivor1 = item_survivor1.points * item_survivor1_quantity
+        points_quantity_survivor2 = item_survivor2.points * item_survivor2_quantity
+        if points_quantity_survivor1 == points_quantity_survivor2:
+            inventory_survivor1.quantity -= item_survivor1_quantity
+            inventory_survivor2.quantity -= item_survivor2_quantity
+            add_item_survivor1 = Inventory.objects.get(survivor=survivor1, item=item_survivor2)
+            add_item_survivor1.quantity += item_survivor2_quantity
+            add_item_survivor1.save()
+            add_item_survivor2 = Inventory.objects.get(survivor=survivor2, item=item_survivor1)
+            add_item_survivor2.quantity += item_survivor2_quantity
+            add_item_survivor2.save()
+            if inventory_survivor1.quantity < 0:
+                inventory_survivor1.quantity = 0
+                inventory_survivor1.save()
+            else:
+                inventory_survivor1.save()
+            if inventory_survivor2.quantity < 0:
+                inventory_survivor2.quantity = 0
+                inventory_survivor2.save()
+            else:
+                inventory_survivor2.save()
+            return Response({'message': _('Transação realizada com sucesso.')})
+        return Response({'message': _('Erro na transação. Verifique os dados fornecidos.')})
+    return Response({'message': _("Sobrevivente não pode trocar item consigo mesmo.")})
+
 

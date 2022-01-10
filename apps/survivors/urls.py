@@ -9,4 +9,5 @@ urlpatterns = [
     path('survivors/', views.SurvivorListCreateAPIView.as_view(), name='survivors'),
     path('inventories/', views.InventoryListCreateAPIView.as_view(), name='inventories'),
     path('survivor-location-update/<int:survivor_id>/', views.SurvivorLocationUpdate.as_view(), name='survivor_location_update'),
+    path('transactions/', views.transaction_between_survivors, name='transactions'),
 ]
