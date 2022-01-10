@@ -90,3 +90,25 @@ def transaction_between_survivors(request):
     return Response({'message': _("Sobrevivente não pode trocar item consigo mesmo.")})
 
 
+@api_view(['POST'])
+def mark_survivor_as_infected(request):
+    """
+    Marca um sobrevivente como infectado. É necessário fornecer a informação de 3 sobreviventes que confirmam a infecção e a informação do
+    infectado.
+    """
+    try:
+        survivor1 = Survivor.objects.get(id=request.data.get('survivor1'), infected=False)
+        survivor2 = Survivor.objects.get(id=request.data.get('survivor2'), infected=False)
+        survivor3 = Survivor.objects.get(id=request.data.get('survivor3'), infected=False)
+        survivor_infected = Survivor.objects.get(id=request.data.get('survivor_infected'))
+    except Survivor.DoesNotExist:
+        return Response({'message': _('Confirme se todos os sobreviventes estão cadastrados no sistema e que não estão infectados.')})
+    survivor_list = set([survivor1, survivor2, survivor3])
+    if len(survivor_list) >= 3 and survivor_infected not in survivor_list:
+        if survivor_infected.infected:
+            return Response({'message': _('Sobrevivente já marcado como infectado.')})
+        else:
+            survivor_infected.infected = True
+            survivor_infected.save()
+        return Response({'message': _('Sobrevivente marcado como infectado.')})
+    return Response({'message': _('Operação não realizada. É preciso três sobreviventes únicos e o suspeito de estar infectado não pode ser quem acusa.')})

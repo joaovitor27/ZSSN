@@ -10,4 +10,6 @@ urlpatterns = [
     path('inventories/', views.InventoryListCreateAPIView.as_view(), name='inventories'),
     path('survivor-location-update/<int:survivor_id>/', views.SurvivorLocationUpdate.as_view(), name='survivor_location_update'),
     path('transactions/', views.transaction_between_survivors, name='transactions'),
+    path('mark-survivor-infected/', views.mark_survivor_as_infected, name='mark_survivor_as_infected'),
+    
 ]
