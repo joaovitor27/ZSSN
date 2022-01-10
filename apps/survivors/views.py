@@ -122,3 +122,12 @@ def survivors_percent_infected_report(request):
     percents = infected_survivors.count() / survivors.count() * 100
     return Response({'survivors_percent_infected': '{0:.2f}'.format(percents)})
 
+
+@api_view(['GET'])
+def survivors_percent_not_infected_report(request):
+    
+    survivors = Survivor.objects.all()
+    not_infected_survivors = survivors.filter(infected=False)
+    percents = not_infected_survivors.count() / survivors.count() * 100
+    return Response({'survivors_percent_not_infected': '{0:.2f}'.format(percents)})
+
