@@ -112,3 +112,5 @@ def mark_survivor_as_infected(request):
             survivor_infected.save()
         return Response({'message': _('Sobrevivente marcado como infectado.')})
     return Response({'message': _('Operação não realizada. É preciso três sobreviventes únicos e o suspeito de estar infectado não pode ser quem acusa.')})
+
+
