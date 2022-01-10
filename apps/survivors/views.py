@@ -131,3 +131,21 @@ def survivors_percent_not_infected_report(request):
     percents = not_infected_survivors.count() / survivors.count() * 100
     return Response({'survivors_percent_not_infected': '{0:.2f}'.format(percents)})
 
+
+@api_view(['GET'])
+def average_item_by_survivors_report(request):
+    """
+    Retorna a média de itens por sobreviventes.
+    """
+    survivors = Survivor.objects.count()
+    inventory = Inventory.objects.values('item__name').order_by('item').annotate(total_items=Sum('quantity'))
+    print('inventory.all', inventory.all())
+    report_data = []
+    for i in inventory:
+        report_data.append(
+            {
+                'item': i.get('item__name'),
+                'survivor_average': '{0:.2f}'.format(i.get('total_items') / survivors)
+            }
+        )
+    return Response(report_data)

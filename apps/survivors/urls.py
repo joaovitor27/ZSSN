@@ -13,5 +13,6 @@ urlpatterns = [
     path('mark-survivor-infected/', views.mark_survivor_as_infected, name='mark_survivor_as_infected'),
     path('infected-survivors/', views.survivors_percent_infected_report, name='survivors_percent_infected_report'),
     path('not-infected-survivors/', views.survivors_percent_not_infected_report, name='survivors_percent_not_infected_report'),
+    path('average-item-survivors/', views.average_item_by_survivors_report, name='average_item_by_survivors_report'),
 
 ]
