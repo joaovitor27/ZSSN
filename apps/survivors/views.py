@@ -92,10 +92,8 @@ def transaction_between_survivors(request):
 
 @api_view(['POST'])
 def mark_survivor_as_infected(request):
-    """
-    Marca um sobrevivente como infectado. É necessário fornecer a informação de 3 sobreviventes que confirmam a infecção e a informação do
-    infectado.
-    """
+  
+  
     try:
         survivor1 = Survivor.objects.get(id=request.data.get('survivor1'), infected=False)
         survivor2 = Survivor.objects.get(id=request.data.get('survivor2'), infected=False)
@@ -134,9 +132,8 @@ def survivors_percent_not_infected_report(request):
 
 @api_view(['GET'])
 def average_item_by_survivors_report(request):
-    """
-    Retorna a média de itens por sobreviventes.
-    """
+  
+
     survivors = Survivor.objects.count()
     inventory = Inventory.objects.values('item__name').order_by('item').annotate(total_items=Sum('quantity'))
     print('inventory.all', inventory.all())
@@ -148,4 +145,23 @@ def average_item_by_survivors_report(request):
                 'survivor_average': '{0:.2f}'.format(i.get('total_items') / survivors)
             }
         )
+    return Response(report_data)
+
+
+@api_view(['GET'])
+def points_lost_by_infected_survivors_report(request):
+  
+
+    infected_survivors = Survivor.objects.filter(infected=True)
+    infected_survivors_list = []
+    total_points_lost = 0
+    for s in infected_survivors:
+        infected_survivors_list.append(s.name)
+        inventory = Inventory.objects.filter(survivor=s)
+        for i in inventory:
+            total_points_lost += i.item.points
+    report_data = {
+        'total_points_lost': total_points_lost,
+        'infected_survivors': infected_survivors_list
+    }
     return Response(report_data)
